@@ -2,7 +2,7 @@
 This is a Grafana plugin to vizualize [httpsql](https://github.com/little-brother/httpsql) responses.
 
 ### Installation 
-* [Download and unpack](https://github.com/little-brother/httpsql-grafana-datasource/archive/master.zip) to 
+* [Download and unpack](https://github.com/shaders/httpsql-grafana-datasource/archive/master.zip) to 
 ```
 Win: %GRAFANA_PATH%/data/plugins
 Nix: /var/lib/grafana/plugins
