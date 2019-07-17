@@ -64,14 +64,15 @@ System.register([], function (_export, _context) {
 						});
 						if (target_list.length == 0) return Promise.resolve({ data: [] });
 
+						var self = this;
 						var url_list = target_list.map(function (target) {
 							var params = target.param_list.map(function (p) {
-								return p + '=' + (target.params[p] || '');
+								var value = self.templateSrv.replace(target.params[p], options.scopedVars, 'regex');
+								return p + '=' + (value || '');
 							}).join('&') || '';
 							return '/' + target.alias + '/' + target.metric + '?' + params + '&from=' + (target.from || from) + '&to=' + (target.to || to) + '&json';
 						});
 
-						var self = this;
 						var scope = url_list.map(function (url) {
 							return _this.doRequest(url);
 						});
