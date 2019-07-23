@@ -40,27 +40,31 @@ export class HttpsqlDatasource {
 			var data =  [];
 			
 			results.forEach(function (result, i) {
-				var res = result.data || [];
-				if (res.length == 0)
+				var resArray = result.data || [];
+				if (resArray.length == 0)
 					return;
-				
-				var target = target_list[i];
-				var columns = Object.keys(res[0]);
 
-				if (target.datatype == 'table') {
-					data.push({
-						columns: columns.map((c) => new Object({text: c, type: c.indexOf('time') != -1 ? 'time' : 'string'})),
-						rows: res.map((e, i) => columns.map((c) => res[i][c])),
-						type: 'table'
-					})
-				} else {
-					data.push({
-						target: target.label || `${target.alias}/${target.metric}`,
-						rows: res.map((e, i) => columns.map((c) => res[i][c])),
-						type: 'timeserie'
-					})
-				}
-					
+				var target = target_list[i];
+
+				//resArray is array of multiple timelines for timeseries
+				resArray.forEach(function (res, i) {
+					if (target.datatype == 'table') {
+						// should have res as: [{"column1":"value", "column2": "value2"},...]
+						var columns = Object.keys(res[0]);
+						data.push({
+							columns: columns.map((c) => new Object({text: c, type: c.indexOf('time') != -1 ? 'time' : 'string'})),
+							rows: res.map((e, i) => columns.map((c) => res[i][c])),
+							type: 'table'
+						})
+					} else {
+						// should have res as: {"target":"seriesName", "datapoints":[[value, time],...]}
+						data.push({
+							target: res.target,
+							datapoints: res.datapoints,
+							type: 'timeserie'
+						})
+					}
+				});
 			});
 
 			return Promise.resolve({data});
