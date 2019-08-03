@@ -27,8 +27,10 @@ export class HttpsqlDatasource {
 
 		var self = this;
 		var url_list = target_list.map(function (target) {
-			var params = target.param_list.map(function (p) {
-				var value = self.templateSrv.replace(target.params[p], options.scopedVars, 'regex');
+
+			var paramList = ["appcode", "account", "sso", "platform"];
+			var params = paramList.map(function (p) {
+				var value = self.templateSrv.replace('$' + p, options.scopedVars, 'regex');
 				return p + '=' + (value || '');
 			}).join('&') || '';
 			return `/${target.alias}/${target.metric}?${params}&from=${target.from || from}&to=${target.to || to}&json`;
